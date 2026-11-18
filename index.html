@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Stilo Ristorante — La tua opinione</title>
+<style>
+  :root {
+    --bg: #0e0b08;
+    --surface: #1a1510;
+    --border: #2e2620;
+    --gold: #c9a84c;
+    --gold-dim: #8a6e30;
+    --text: #f0e8d8;
+    --text-muted: #9a8e7e;
+    --star-off: #2e2620;
+    --star-on: #c9a84c;
+    --green: #4a7c59;
+    --red-soft: #7c4a4a;
+    font-size: 16px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Georgia', serif;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1.25rem;
+    padding-top: calc(env(safe-area-inset-top, 0px) + 2rem);
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 2rem);
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    width: 100%;
+    max-width: 420px;
+    padding: 2.5rem 2rem;
+    text-align: center;
+  }
+
+  .logo-mark {
+    font-family: 'Georgia', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+
+  .restaurant-name {
+    font-size: 1.75rem;
+    font-weight: normal;
+    color: var(--text);
+    letter-spacing: 0.04em;
+    margin-bottom: 0.25rem;
+  }
+
+  .divider {
+    width: 40px;
+    height: 1px;
+    background: var(--gold-dim);
+    margin: 1.25rem auto;
+  }
+
+  .question {
+    font-size: 1.05rem;
+    color: var(--text-muted);
+    font-style: italic;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+  }
+
+  /* STARS */
+  .stars-row {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .star {
+    width: 48px;
+    height: 48px;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+  }
+
+  .star:hover { transform: scale(1.15); }
+
+  .star svg { width: 100%; height: 100%; }
+
+  .star-count-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+    min-height: 1.2em;
+    font-style: italic;
+  }
+
+  /* SCREENS */
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* BUTTON */
+  .btn {
+    display: inline-block;
+    background: var(--gold);
+    color: #0e0b08;
+    font-family: 'Georgia', serif;
+    font-size: 0.95rem;
+    letter-spacing: 0.08em;
+    padding: 0.85rem 2.2rem;
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.2s;
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+  .btn:hover { background: #e0bc6a; }
+
+  .btn-outline {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin-top: 0.75rem;
+  }
+  .btn-outline:hover { background: var(--border); color: var(--text); }
+
+  /* FORM */
+  .form-label {
+    display: block;
+    text-align: left;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 0.4rem;
+    margin-top: 1.25rem;
+    text-transform: uppercase;
+    font-family: Arial, sans-serif;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  textarea {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    color: var(--text);
+    font-family: 'Georgia', serif;
+    font-size: 0.95rem;
+    padding: 0.75rem 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+    resize: none;
+  }
+
+  input:focus, textarea:focus {
+    border-color: var(--gold-dim);
+  }
+
+  textarea { height: 110px; }
+
+  /* ICON SCREENS */
+  .icon-big {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  .screen-title {
+    font-size: 1.3rem;
+    color: var(--text);
+    margin-bottom: 0.75rem;
+    font-weight: normal;
+  }
+
+  .screen-body {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    line-height: 1.65;
+    font-style: italic;
+    margin-bottom: 1.75rem;
+  }
+
+  .stars-display {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    margin-bottom: 1.5rem;
+  }
+
+  .stars-display span { font-size: 1.3rem; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .star { transition: none; }
+    .btn { transition: none; }
+  }
+
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #faf7f2;
+      --surface: #ffffff;
+      --border: #e0d8cc;
+      --text: #1a1510;
+      --text-muted: #7a6e5e;
+      --star-off: #e0d8cc;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+
+  <!-- SCREEN 1: valutazione stelle -->
+  <div class="screen active" id="screen-stars">
+    <div class="logo-mark">Ristorante · Pizzeria</div>
+    <h1 class="restaurant-name">Stilo</h1>
+    <div class="divider"></div>
+    <p class="question">Com'è stata la tua esperienza stasera?</p>
+
+    <div class="stars-row" id="starsRow">
+      <div class="star" data-val="1" onclick="selectStar(1)">
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon id="s1" points="24,4 29,18 44,18 32,27 37,41 24,32 11,41 16,27 4,18 19,18" fill="var(--star-off)" stroke="none"/>
+        </svg>
+      </div>
+      <div class="star" data-val="2" onclick="selectStar(2)">
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon id="s2" points="24,4 29,18 44,18 32,27 37,41 24,32 11,41 16,27 4,18 19,18" fill="var(--star-off)" stroke="none"/>
+        </svg>
+      </div>
+      <div class="star" data-val="3" onclick="selectStar(3)">
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon id="s3" points="24,4 29,18 44,18 32,27 37,41 24,32 11,41 16,27 4,18 19,18" fill="var(--star-off)" stroke="none"/>
+        </svg>
+      </div>
+      <div class="star" data-val="4" onclick="selectStar(4)">
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon id="s4" points="24,4 29,18 44,18 32,27 37,41 24,32 11,41 16,27 4,18 19,18" fill="var(--star-off)" stroke="none"/>
+        </svg>
+      </div>
+      <div class="star" data-val="5" onclick="selectStar(5)">
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon id="s5" points="24,4 29,18 44,18 32,27 37,41 24,32 11,41 16,27 4,18 19,18" fill="var(--star-off)" stroke="none"/>
+        </svg>
+      </div>
+    </div>
+
+    <p class="star-count-label" id="starLabel">&nbsp;</p>
+
+    <button class="btn" onclick="handleContinue()" id="btnContinue" style="display:none;">Continua</button>
+  </div>
+
+  <!-- SCREEN 2a: 4-5 stelle → Google -->
+  <div class="screen" id="screen-positive">
+    <span class="icon-big">🌟</span>
+    <div class="stars-display" id="starsDisplayPos"></div>
+    <h2 class="screen-title">Grazie mille!</h2>
+    <p class="screen-body">Siamo davvero felici che tu abbia vissuto una bella serata da noi. Ci aiuteresti molto lasciando la tua recensione su Google — bastano trenta secondi.</p>
+    <a class="btn" href="https://www.google.it/maps/place/Stilo+Ristorante+Pizzeria/@45.8128606,9.0769955,17z/data=!3m2!4b1!5s0x47869db4784c3691:0x14158062815810a4!4m6!3m5!1s0x47869db39aac7831:0xf8f1b6500e421bac!8m2!3d45.8128606!4d9.0795704!16s%2Fg%2F1ptvrx9zv?entry=ttu&g_ep=EgoyMDI2MTExNi4wIKXMDSoASAFQAw%3D%3D" target="_blank">Lascia la recensione su Google</a>
+  </div>
+
+  <!-- SCREEN 2b: 1-3 stelle → form privato -->
+  <div class="screen" id="screen-negative">
+    <span class="icon-big">🙏</span>
+    <div class="stars-display" id="starsDisplayNeg"></div>
+    <h2 class="screen-title">Ci dispiace sentire questo</h2>
+    <p class="screen-body">Il tuo feedback è prezioso per migliorare. Raccontaci cosa non ha funzionato — lo staff lo leggerà personalmente.</p>
+
+    <label class="form-label">Nome (opzionale)</label>
+    <input type="text" id="fname" placeholder="Il tuo nome">
+
+    <label class="form-label">Email (opzionale)</label>
+    <input type="email" id="femail" placeholder="per ricevere una risposta">
+
+    <label class="form-label">Cosa è andato storto?</label>
+    <textarea id="fmessage" placeholder="Raccontaci la tua esperienza…"></textarea>
+
+    <button class="btn" onclick="submitFeedback()" style="margin-top:1.25rem;">Invia il feedback</button>
+    <button class="btn btn-outline" onclick="goBack()">← Torna indietro</button>
+  </div>
+
+  <!-- SCREEN 3: feedback inviato -->
+  <div class="screen" id="screen-sent">
+    <span class="icon-big">✉️</span>
+    <h2 class="screen-title">Feedback ricevuto</h2>
+    <p class="screen-body">Grazie per la tua onestà. Lo staff leggerà il tuo messaggio e si impegnerà a fare meglio. Speriamo di rivederti presto.</p>
+    <div class="divider"></div>
+    <p style="font-size:0.8rem; color:var(--text-muted); font-style:italic; margin-top:1rem;">Stilo Ristorante Pizzeria</p>
+  </div>
+
+</div>
+
+<script>
+  let selectedStars = 0;
+  const labels = ['', 'Molto insoddisfatto', 'Insoddisfatto', 'Nella media', 'Soddisfatto', 'Entusiasta!'];
+  const starColors = ['','#c0392b','#e67e22','#f1c40f','var(--star-on)','var(--star-on)'];
+
+  function selectStar(val) {
+    selectedStars = val;
+    for (let i = 1; i <= 5; i++) {
+      const poly = document.getElementById('s' + i);
+      poly.setAttribute('fill', i <= val ? starColors[val] : 'var(--star-off)');
+    }
+    document.getElementById('starLabel').textContent = labels[val];
+    document.getElementById('btnContinue').style.display = 'block';
+  }
+
+  function handleContinue() {
+    if (!selectedStars) return;
+    hideAll();
+    if (selectedStars >= 4) {
+      renderStarsDisplay('starsDisplayPos', selectedStars);
+      document.getElementById('screen-positive').classList.add('active');
+    } else {
+      renderStarsDisplay('starsDisplayNeg', selectedStars);
+      document.getElementById('screen-negative').classList.add('active');
+    }
+  }
+
+  function renderStarsDisplay(containerId, val) {
+    const c = document.getElementById(containerId);
+    c.innerHTML = '';
+    const starColors2 = ['','#c0392b','#e67e22','#f1c40f','#c9a84c','#c9a84c'];
+    for (let i = 1; i <= 5; i++) {
+      const s = document.createElement('span');
+      s.textContent = '★';
+      s.style.color = i <= val ? starColors2[val] : '#2e2620';
+      c.appendChild(s);
+    }
+  }
+
+  function hideAll() {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  }
+
+  function goBack() {
+    hideAll();
+    document.getElementById('screen-stars').classList.add('active');
+  }
+
+  function submitFeedback() {
+    const name  = document.getElementById('fname').value.trim();
+    const email = document.getElementById('femail').value.trim();
+    const msg   = document.getElementById('fmessage').value.trim();
+
+    if (!msg) {
+      document.getElementById('fmessage').style.borderColor = '#c0392b';
+      document.getElementById('fmessage').placeholder = 'Scrivi almeno un commento…';
+      return;
+    }
+
+    // Costruisce mailto con i dati
+    const subject = encodeURIComponent('Feedback negativo — ' + selectedStars + ' stelle' + (name ? ' da ' + name : ''));
+    const body = encodeURIComponent(
+      'Stelle: ' + selectedStars + '/5\n' +
+      'Nome: ' + (name || 'Anonimo') + '\n' +
+      'Email cliente: ' + (email || 'Non fornita') + '\n\n' +
+      'Messaggio:\n' + msg
+    );
+
+    // Apre client mail — in produzione sostituire con server-side o EmailJS
+    window.location.href = 'mailto:INSERISCI@EMAIL.COM?subject=' + subject + '&body=' + body;
+
+    hideAll();
+    document.getElementById('screen-sent').classList.add('active');
+  }
+</script>
+</body>
+</html>
